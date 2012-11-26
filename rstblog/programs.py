@@ -80,19 +80,23 @@ class RSTProgram(TemplatedProgram):
     default_template = 'rst_display.html'
     _fragment_cache = None
 
-    def prepare(self):
+    def get_header(self, stream):
         headers = ['---']
+        consecutive_blank_lines = 0
+        while True:
+            line = stream.readline().rstrip()
+            if not line:
+                consecutive_blank_lines += 1
+                if consecutive_blank_lines > 1:
+                    break
+            else:
+                consecutive_blank_lines = 0
+            headers.append(line)
+        return headers
+
+    def prepare(self):
         with self.context.open_source_file() as f:
-            consecutive_blank_lines = 0
-            for line in f:
-                line = line.rstrip()
-                if not line:
-                    consecutive_blank_lines += 1
-                    if consecutive_blank_lines > 1:
-                        break
-                else:
-                    consecutive_blank_lines = 0
-                headers.append(line)
+            headers = self.get_header(f)
             title = self.parse_text_title(f)
 
         cfg = yaml.load(StringIO('\n'.join(headers)))
@@ -137,8 +141,7 @@ class RSTProgram(TemplatedProgram):
         if self._fragment_cache is not None:
             return self._fragment_cache
         with self.context.open_source_file() as f:
-            while f.readline().strip():
-                pass
+            self.get_header(f)
             rv = self.context.render_rst(f.read().decode('utf-8'))
         self._fragment_cache = rv
         return rv
