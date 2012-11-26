@@ -83,10 +83,15 @@ class RSTProgram(TemplatedProgram):
     def prepare(self):
         headers = ['---']
         with self.context.open_source_file() as f:
+            consecutive_blank_lines = 0
             for line in f:
                 line = line.rstrip()
                 if not line:
-                    break
+                    consecutive_blank_lines += 1
+                    if consecutive_blank_lines > 1:
+                        break
+                else:
+                    consecutive_blank_lines = 0
                 headers.append(line)
             title = self.parse_text_title(f)
 
