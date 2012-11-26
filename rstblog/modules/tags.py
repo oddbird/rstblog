@@ -92,7 +92,7 @@ def write_tag_feed(builder, tag):
 
 def write_tag_page(builder, tag):
     entries = get_tagged_entries(builder, tag)
-    entries.sort(key=lambda x: (x.title or '').lower())
+    entries.sort(key=lambda x: x.pub_date, reverse=True)
     with builder.open_link_file('tag', tag=tag.name) as f:
         rv = builder.render_template('tag.html', {
             'tag':      tag,
