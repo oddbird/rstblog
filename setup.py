@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='rstblog',
-    version='1.0',
+    version='1.0.obc1',
     author='Armin Ronacher <armin.ronacher@active-4.com>',
     packages=['rstblog', 'rstblog.modules'],
     include_package_data=True,
