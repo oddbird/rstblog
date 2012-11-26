@@ -16,12 +16,13 @@ from jinja2 import Markup
 class Pagination(object):
     """Internal helper class for paginations"""
 
-    def __init__(self, builder, entries, page, per_page, url_key):
+    def __init__(self, builder, entries, page, per_page, url_key, url_extra=None):
         self.builder = builder
         self.entries = entries
         self.page = page
         self.per_page = per_page
         self.url_key = url_key
+        self.url_extra = url_extra or {}
 
     @property
     def total(self):
@@ -33,7 +34,7 @@ class Pagination(object):
 
     def get_prev(self):
         return Pagination(self.builder, self.entries, self.page - 1,
-                          self.per_page, self.url_key)
+                          self.per_page, self.url_key, self.url_extra)
 
     @property
     def prev_num(self):
@@ -47,7 +48,7 @@ class Pagination(object):
 
     def get_next(self):
         return Pagination(self.builder, self.entries, self.page + 1,
-                          self.per_page, self.url_key)
+                          self.per_page, self.url_key, self.url_extra)
 
     @property
     def has_next(self):
