@@ -177,6 +177,9 @@ class BuildError(ValueError):
 
 
 class Builder(object):
+    """
+    The orchestrating object of the whole system.
+    """
     default_ignores = ('.*', '_*', 'config.yml', 'Makefile', 'README', '*.conf', )
     default_programs = {
         '*.rst':    'rst'
@@ -329,6 +332,9 @@ class Builder(object):
         return False
 
     def run(self):
+        """
+        Make it go.
+        """
         self.storage.clear()
         contexts = list(self.iter_contexts())
 

@@ -8,7 +8,8 @@ Getting Started
    :maxdepth: 2
 
    readme
-   rstblog
+   walkthrough
+   the_pieces
 
 
 Indices and tables

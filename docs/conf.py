@@ -31,6 +31,13 @@ project_root = os.path.dirname(cwd)
 sys.path.insert(0, project_root)
 
 import rstblog
+import rstblog.builder
+import rstblog.cli
+import rstblog.config
+import rstblog.programs
+import rstblog.server
+import rstblog.signals
+import rstblog.utils
 
 # -- General configuration ------------------------------------------------
 
