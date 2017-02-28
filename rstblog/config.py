@@ -39,7 +39,7 @@ class Config(object):
         for layer in self.stack:
             for key, value in layer.iteritems():
                 if key.startswith(prefix):
-                    rv[key] = value
+                    rv[key[len(prefix):]] = value
         return rv
 
     def merged_get(self, key):
