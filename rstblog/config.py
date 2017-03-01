@@ -15,7 +15,13 @@ missing = object()
 
 
 class Config(object):
-    """A stacked config."""
+    """
+    A stacked config.
+
+    Once you've created the config, you can either create from file, or from a
+    dict. In either case, a _new_ Config object is returned, with the previous
+    Config object as its parent.
+    """
 
     def __init__(self):
         self.stack = []
@@ -62,12 +68,29 @@ class Config(object):
         return self.stack[0].get(key, default)
 
     def add_from_dict(self, d):
-        """Returns a new config from this config with another layer added
-        from a given dictionary.
+        """
+        Returns a new config from this config with another layer added from a
+        given dictionary.
+
+        NB: If you create from a dict, any nested dicts will be flattened, and
+        have their keys joined by dot-notation. So for example::
+
+            d = {
+                "foo": {
+                    "bar": 1,
+                    "baz": 2,
+                },
+                "qux": 3,
+            }
+            c = config.add_from_dict(d)
+
+        Will result in a Config object with the keys "foo.bar", "foo.baz", and
+        "qux".
         """
         layer = {}
         rv = Config()
         rv.stack = self.stack + [layer]
+
         def _walk(d, prefix):
             for key, value in d.iteritems():
                 if isinstance(value, dict):
@@ -78,8 +101,9 @@ class Config(object):
         return rv
 
     def add_from_file(self, fd):
-        """Returns a new config from this config with another layer added
-        from a given config file.
+        """
+        Returns a new config from this config with another layer added from a
+        given config file. Uses :meth:`add_from_dict` under the hood.
         """
         d = yaml.load(fd)
         if not d:

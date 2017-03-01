@@ -20,7 +20,24 @@ The Pieces
    :members:
 
 .. automodule:: rstblog.signals
-   :members:
+
+   .. autodata:: rstblog.signals.before_file_processed
+      :annotation:
+
+   .. autodata:: rstblog.signals.after_file_prepared
+      :annotation:
+
+   .. autodata:: rstblog.signals.after_file_published
+      :annotation:
+
+   .. autodata:: rstblog.signals.before_template_rendered
+      :annotation:
+
+   .. autodata:: rstblog.signals.before_build_finished
+      :annotation:
+
+   .. autodata:: rstblog.signals.before_file_built
+      :annotation:
 
 .. automodule:: rstblog.utils
    :members:

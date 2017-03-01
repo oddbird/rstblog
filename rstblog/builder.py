@@ -179,6 +179,10 @@ class BuildError(ValueError):
 class Builder(object):
     """
     The orchestrating object of the whole system.
+
+    Args:
+        project_folder (str): Path to the root of the files to compile.
+        config (Config): Root config for the builder.
     """
     default_ignores = ('.*', '_*', 'config.yml', 'Makefile', 'README', '*.conf', )
     default_programs = {

@@ -1,6 +1,13 @@
 rstBlog
 =======
 
-My NIH static blog replacement for my old dynamic blog.
+Based on `Armin Ronacher's <https://github.com/mitsuhiko/rstblog>`_ static blog
+generator.
 
-Totally nothing new but does the trick for me.
+To build the documentation::
+
+    # In a virtual env:
+    pip install pyyaml babel blinker docutils werkzeug jinja2 sphinx
+    cd docs
+    make html
+    open _build/html/index.html
