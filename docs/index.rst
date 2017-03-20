@@ -10,6 +10,7 @@ Getting Started
    readme
    walkthrough
    the_pieces
+   config
 
 
 Indices and tables
