@@ -71,10 +71,15 @@ class Pagination(object):
         """
         last = 0
         for num in xrange(1, self.pages + 1):
-            if num <= left_edge or \
-               (num > self.page - left_current - 1 and \
-                num < self.page + right_current) or \
-               num > self.pages - right_edge:
+            bool_1 = num <= left_edge
+
+            bool_2_1 = num > self.page - left_current - 1
+            bool_2_2 = num < self.page + right_current
+            bool_2 = bool_2_1 and bool_2_2
+
+            bool_3 = num > self.pages - right_edge
+
+            if bool_1 or bool_2 or bool_3:
                 if last + 1 != num:
                     yield None
                 yield num

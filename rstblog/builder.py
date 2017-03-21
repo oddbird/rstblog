@@ -78,7 +78,10 @@ class Context(object):
         directory, filename = os.path.split(self.source_filename)
         basename, ext = os.path.splitext(filename)
         if basename == 'index':
-            return posixpath.join(directory, basename).rstrip('/').replace('\\', '/')
+            return posixpath.join(
+                directory,
+                basename,
+            ).rstrip('/').replace('\\', '/')
         return posixpath.join(directory, basename).replace('\\', '/')
 
     def make_destination_folder(self):
@@ -184,7 +187,14 @@ class Builder(object):
         project_folder (str): Path to the root of the files to compile.
         config (Config): Root config for the builder.
     """
-    default_ignores = ('.*', '_*', 'config.yml', 'Makefile', 'README', '*.conf', )
+    default_ignores = (
+        '.*',
+        '_*',
+        'config.yml',
+        'Makefile',
+        'README',
+        '*.conf',
+    )
     default_programs = {
         '*.rst':    'rst'
     }
@@ -200,13 +210,19 @@ class Builder(object):
         self.url_map = Map()
         parsed = urlparse(self.config.root_get('canonical_url'))
         self.prefix_path = parsed.path
-        self.url_adapter = self.url_map.bind('dummy.invalid',
-            script_name=self.prefix_path)
+        self.url_adapter = self.url_map.bind(
+            'dummy.invalid',
+            script_name=self.prefix_path,
+        )
         self.register_url('page', '/<path:slug>')
 
-        template_path = os.path.join(self.project_folder,
-            self.config.root_get('template_path') or
-                self.default_template_path)
+        template_path = os.path.join(
+            self.project_folder,
+            (
+                self.config.root_get('template_path') or
+                self.default_template_path
+            ),
+        )
         self.locale = Locale(self.config.root_get('locale') or 'en')
         self.jinja_env = Environment(
             loader=FileSystemLoader([template_path, builtin_templates]),
@@ -220,8 +236,10 @@ class Builder(object):
             format_time=self.format_time
         )
 
-        self.static_folder = self.config.root_get('static_folder') or \
-                             self.default_static_folder
+        self.static_folder = (
+            self.config.root_get('static_folder') or
+            self.default_static_folder
+        )
 
         for module in self.config.root_get('active_modules') or []:
             mod = find_module(module)
@@ -238,7 +256,9 @@ class Builder(object):
         return self.url_adapter.build(_key, values)
 
     def get_link_filename(self, _key, **values):
-        link = url_unquote(self.link_to(_key, **values).lstrip('/')).encode('utf-8')
+        link = url_unquote(
+            self.link_to(_key, **values).lstrip('/'),
+        ).encode('utf-8')
         if not link or link.endswith('/'):
             link += 'index.html'
         return os.path.join(self.default_output_folder, link)
