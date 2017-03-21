@@ -11,6 +11,7 @@ Getting Started
    walkthrough
    the_pieces
    config
+   template_variables
 
 
 Indices and tables
