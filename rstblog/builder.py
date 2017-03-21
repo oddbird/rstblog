@@ -128,12 +128,37 @@ class Context(object):
         }
 
     def render_template(self, template_name, context=None):
+        """
+        Render a template in the current context.
+
+        Args:
+            template_name (str): the path to the template you want, relative to
+                the Jinja2 template loader root.
+
+        Keyword Args:
+            context (Context or None): Extra context to pass in to the
+                rendering.
+
+        Returns:
+            str: The rendered template.
+        """
+
         real_context = self.get_default_template_context()
         if context:
             real_context.update(context)
         return self.builder.render_template(template_name, real_context)
 
     def render_rst(self, contents):
+        """
+        Render an arbitrary string as reST.
+
+        Args:
+            contents (str): .
+
+        Returns:
+            dict<str, Markup>: The title, HTML title, and fragment.
+        """
+
         settings = {
             'initial_header_level': self.config.get('rst_header_level', 2),
             'rstblog_context':      self
@@ -148,9 +173,26 @@ class Context(object):
         }
 
     def render_contents(self):
+        """
+        Render the reST body of the context.
+
+        Not the YAML header.
+
+        Returns:
+            str: The rendered reST body.
+        """
+
         return self.program.render_contents()
 
     def render_summary(self):
+        """
+        Render the current context's ``summary``, if it has one.
+
+        Returns:
+            str: The context's ``summary`` attribute rendered as reST, or an
+                empty string if there is no ``summary``.
+        """
+
         if not self.summary:
             return u''
         return self.render_rst(self.summary)['fragment']
@@ -166,11 +208,23 @@ class Context(object):
         })
 
     def run(self):
+        """
+        Build the context if necessary.
+        """
         before_file_processed.send(self)
         if self.needs_build:
             self.build()
 
     def build(self):
+        """
+        Build the context.
+
+        That consists of running the associated
+        :class:`~rstblog.programs.Program`, which will typically get the file
+        specified in the current :class:`Context` and load the YAML header
+        into the :class:`Context` and render the body as reST, and then write
+        that to the correct output file.
+        """
         before_file_built.send(self)
         self.program.run()
 

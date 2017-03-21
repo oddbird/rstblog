@@ -18,6 +18,11 @@ from weakref import ref
 
 
 class Program(object):
+    """
+    A base class for all Programs.
+
+    Subclass this to make specific programs, such as Copy or reStructuredText.
+    """
 
     def __init__(self, context):
         self._context = ref(context)
@@ -76,7 +81,7 @@ class TemplatedProgram(Program):
 
 
 class RSTProgram(TemplatedProgram):
-    """A program that renders an rst file into a template"""
+    """A program that renders a reST file into a template"""
     default_template = 'rst_display.html'
     _fragment_cache = None
 
