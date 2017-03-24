@@ -1,28 +1,42 @@
 Configuration
 =============
 
-rST Blog expects a YAML file with some configuration values. For example::
+rST Blog expects a YAML file with some configuration values.
 
-    active_modules: [
-      foo,
-      bar,
-      baz
-      ]
-    programs:
-      '*.rst': 'rst'
-      '*.jpg': 'image'
-      '*.jpeg': 'image'
-      '*.png': 'image'
-    canonical_url: http://example.com/
-    template_path: ../templates
-    asset_map_path: static/assets.json
-    ignore_files: ['.*', '_*', 'config*.yml', 'Makefile', 'README', '*.conf', '*~']
-    modules:
-      blog:
-        index_url: /blog/
-        per_page: 10
+Modules can expect their own configuration keys, but the core system knows
+about these:
 
-The templates are rendered in a context that contains 
+``canonical_url``
+    The full root URL at which the site expects to be served. Something like
+    ``https://example.com/``.
+``template_path``
+    The path, relative to the config file, where templates can be found.
+    Defaults to ``_templates``.
+``locale``
+    The locale for the site. Defaults to ``en``.
+``template_autoescape``
+    Passes through to Jinja2 Environment ``autoescape``. Sets whether HTML/XML
+    tags are escaped. Defaults to ``True``.
+``static_folder``
+    The path, relative to the config file, where static assets are stored.
+    Defaults to ``static``.
+``active_modules``
+    A list of installed module names.
+``output_folder``
+    The path, relative to the *project root*, where the built site is emitted.
+    Defaults to ``_build``.
+``ignore_files``
+    A list of glob patterns to ignore when building the site, or ``None`` if
+    nothing should be ignored. Defaults to ``None``.
+``programs``
+    A dict of file extension to program name, for what compilation program
+    should be used for what file types. Defaults to ``{'*.rst': 'rst'}``, and
+    falls back to ``copy`` if it cannot find a matching program.
+
+
+A given context (i.e. ``.rst`` file on disk) can override the template used to
+render it with the ``template`` key in its YAML header.
+
 
 Config vs. Context
 ------------------
