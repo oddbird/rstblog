@@ -47,3 +47,5 @@ page Jinja2 template then renders in the context of the header and body.
 The important thing to note here is that the config is available in the
 context; both the global ``config.yml``, and any local ``config.yml`` in the
 same directory as the page in question.
+
+See :doc:`template_variables` for more.
