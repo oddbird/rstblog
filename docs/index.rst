@@ -10,6 +10,8 @@ Getting Started
    readme
    walkthrough
    the_pieces
+   config
+   template_variables
 
 
 Indices and tables
