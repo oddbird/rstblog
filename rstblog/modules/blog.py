@@ -106,7 +106,10 @@ def get_recent_blog_entries(context, limit=10):
 
 
 def write_index_page(builder):
-    use_pagination = builder.config.root_get('modules.blog.use_pagination', True)
+    use_pagination = builder.config.root_get(
+        'modules.blog.use_pagination',
+        True,
+    )
     per_page = builder.config.root_get('modules.blog.per_page', 10)
     entries = get_all_entries(builder)
     pagination = Pagination(builder, entries, 1, per_page, 'blog_index')
@@ -174,8 +177,11 @@ def setup(builder):
     before_build_finished.connect(write_blog_files)
     builder.register_url('blog_index', config_key='modules.blog.index_url',
                          config_default='/', defaults={'page': 1})
-    builder.register_url('blog_index', config_key='modules.blog.paged_index_url',
-                         config_default='/page/<page>/')
+    builder.register_url(
+        'blog_index',
+        config_key='modules.blog.paged_index_url',
+        config_default='/page/<page>/',
+    )
     builder.register_url('blog_archive', config_key='modules.blog.archive_url',
                          config_default='/archive/')
     builder.register_url('blog_archive',

@@ -78,7 +78,10 @@ class Context(object):
         directory, filename = os.path.split(self.source_filename)
         basename, ext = os.path.splitext(filename)
         if basename == 'index':
-            return posixpath.join(directory, basename).rstrip('/').replace('\\', '/')
+            return posixpath.join(
+                directory,
+                basename,
+            ).rstrip('/').replace('\\', '/')
         return posixpath.join(directory, basename).replace('\\', '/')
 
     def make_destination_folder(self):
@@ -125,12 +128,37 @@ class Context(object):
         }
 
     def render_template(self, template_name, context=None):
+        """
+        Render a template in the current context.
+
+        Args:
+            template_name (str): the path to the template you want, relative to
+                the Jinja2 template loader root.
+
+        Keyword Args:
+            context (Context or None): Extra context to pass in to the
+                rendering.
+
+        Returns:
+            str: The rendered template.
+        """
+
         real_context = self.get_default_template_context()
         if context:
             real_context.update(context)
         return self.builder.render_template(template_name, real_context)
 
     def render_rst(self, contents):
+        """
+        Render an arbitrary string as reST.
+
+        Args:
+            contents (str): .
+
+        Returns:
+            dict<str, Markup>: The title, HTML title, and fragment.
+        """
+
         settings = {
             'initial_header_level': self.config.get('rst_header_level', 2),
             'rstblog_context':      self
@@ -145,9 +173,26 @@ class Context(object):
         }
 
     def render_contents(self):
+        """
+        Render the reST body of the context.
+
+        Not the YAML header.
+
+        Returns:
+            str: The rendered reST body.
+        """
+
         return self.program.render_contents()
 
     def render_summary(self):
+        """
+        Render the current context's ``summary``, if it has one.
+
+        Returns:
+            str: The context's ``summary`` attribute rendered as reST, or an
+                empty string if there is no ``summary``.
+        """
+
         if not self.summary:
             return u''
         return self.render_rst(self.summary)['fragment']
@@ -163,11 +208,23 @@ class Context(object):
         })
 
     def run(self):
+        """
+        Build the context if necessary.
+        """
         before_file_processed.send(self)
         if self.needs_build:
             self.build()
 
     def build(self):
+        """
+        Build the context.
+
+        That consists of running the associated
+        :class:`~rstblog.programs.Program`, which will typically get the file
+        specified in the current :class:`Context` and load the YAML header
+        into the :class:`Context` and render the body as reST, and then write
+        that to the correct output file.
+        """
         before_file_built.send(self)
         self.program.run()
 
@@ -177,7 +234,21 @@ class BuildError(ValueError):
 
 
 class Builder(object):
-    default_ignores = ('.*', '_*', 'config.yml', 'Makefile', 'README', '*.conf', )
+    """
+    The orchestrating object of the whole system.
+
+    Args:
+        project_folder (str): Path to the root of the files to compile.
+        config (Config): Root config for the builder.
+    """
+    default_ignores = (
+        '.*',
+        '_*',
+        'config.yml',
+        'Makefile',
+        'README',
+        '*.conf',
+    )
     default_programs = {
         '*.rst':    'rst'
     }
@@ -193,13 +264,19 @@ class Builder(object):
         self.url_map = Map()
         parsed = urlparse(self.config.root_get('canonical_url'))
         self.prefix_path = parsed.path
-        self.url_adapter = self.url_map.bind('dummy.invalid',
-            script_name=self.prefix_path)
+        self.url_adapter = self.url_map.bind(
+            'dummy.invalid',
+            script_name=self.prefix_path,
+        )
         self.register_url('page', '/<path:slug>')
 
-        template_path = os.path.join(self.project_folder,
-            self.config.root_get('template_path') or
-                self.default_template_path)
+        template_path = os.path.join(
+            self.project_folder,
+            (
+                self.config.root_get('template_path') or
+                self.default_template_path
+            ),
+        )
         self.locale = Locale(self.config.root_get('locale') or 'en')
         self.jinja_env = Environment(
             loader=FileSystemLoader([template_path, builtin_templates]),
@@ -213,8 +290,10 @@ class Builder(object):
             format_time=self.format_time
         )
 
-        self.static_folder = self.config.root_get('static_folder') or \
-                             self.default_static_folder
+        self.static_folder = (
+            self.config.root_get('static_folder') or
+            self.default_static_folder
+        )
 
         for module in self.config.root_get('active_modules') or []:
             mod = find_module(module)
@@ -231,7 +310,9 @@ class Builder(object):
         return self.url_adapter.build(_key, values)
 
     def get_link_filename(self, _key, **values):
-        link = url_unquote(self.link_to(_key, **values).lstrip('/')).encode('utf-8')
+        link = url_unquote(
+            self.link_to(_key, **values).lstrip('/'),
+        ).encode('utf-8')
         if not link or link.endswith('/'):
             link += 'index.html'
         return os.path.join(self.default_output_folder, link)
@@ -329,6 +410,9 @@ class Builder(object):
         return False
 
     def run(self):
+        """
+        Make it go.
+        """
         self.storage.clear()
         contexts = list(self.iter_contexts())
 
