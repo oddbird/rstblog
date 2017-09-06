@@ -162,6 +162,7 @@ class Context(object):
         settings = {
             'initial_header_level': self.config.get('rst_header_level', 2),
             'rstblog_context':      self,
+            'smart_quotes':         self.config.get('smart_quotes', False),
             'syntax_highlight':     'short'
         }
         parts = publish_parts(source=contents,
