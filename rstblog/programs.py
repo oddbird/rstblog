@@ -39,6 +39,8 @@ class Program(object):
         simple_name = os.path.splitext(basename)[0]
         if simple_name == 'index':
             suffix = 'index.html'
+        elif simple_name == '404':
+            suffix = '404.html'
         else:
             suffix = os.path.join(simple_name, 'index.html')
         return os.path.join(folder, suffix)
