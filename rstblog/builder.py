@@ -161,7 +161,8 @@ class Context(object):
 
         settings = {
             'initial_header_level': self.config.get('rst_header_level', 2),
-            'rstblog_context':      self
+            'rstblog_context':      self,
+            'syntax_highlight':     'short'
         }
         parts = publish_parts(source=contents,
                               writer_name=self.config.get('rst_writer', 'html4css1'),
